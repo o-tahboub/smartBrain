@@ -1,6 +1,6 @@
 import React from 'react'
 
-const ImageLinkForm = () => {
+const ImageLinkForm = ({ onInputChange, onButtonSubmit }) => {
     return (
         <div>
             <p className='center m-4 text-base'>
@@ -15,7 +15,10 @@ const ImageLinkForm = () => {
                                 rounded-lg 
                                 shadow-lg
                                 bg-sky-800'>
-                    <input type="text" className='text-sm p-2 w-9/12 mx-auto'/>
+                    <input 
+                        type="text" 
+                        className='text-sm p-2 w-9/12 mx-auto' 
+                        onChange={onInputChange}/>
                     <button className='w-3/12 
                         ease-out 
                         text-sm
@@ -27,7 +30,8 @@ const ImageLinkForm = () => {
                         inline-block
                         text-white
                         bg-purple-600
-                        cursor-pointer'>Detect</button>
+                        cursor-pointer'
+                        onClick={onButtonSubmit}>Detect</button>
                 </div>
             </div>
         </div>
