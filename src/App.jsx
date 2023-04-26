@@ -3,6 +3,7 @@ import Navigation from './components/Navigation'
 import Logo from './components/Logo'
 import Rank from './components/Rank'
 import ImageLinkForm from './components/ImageLinkForm'
+import FaceRecognition from './components/FaceRecognition'
 import './App.css'
 
 class App extends Component {
@@ -10,28 +11,27 @@ class App extends Component {
     super();
     this.state = {
       input: '',
+      imageUrl:'',
       clarifaiConfig: {
         PAT:***REMOVED***,
         USER_ID:***REMOVED***,
         APP_ID:***REMOVED***,
         MODEL_ID: ***REMOVED***,
-        IMAGE_URL: 'https://samples.clarifai.com/metro-north.jpg'
       }
     }
   }
 
-  setupClarifiaRequestBody = () => {
-    const config = this.state.clarifaiConfig;
+  setupClarifiaRequestBody = (config, imageUrl) => {
     return JSON.stringify({
       "user_app_id": {
-          "user_id": config.USER_ID ,
+          "user_id": config.USER_ID,
           "app_id": config.APP_ID
       },
       "inputs": [
           {
               "data": {
                   "image": {
-                      "url": config.IMAGE_URL
+                      "url": imageUrl
                   }
               }
           }
@@ -39,21 +39,19 @@ class App extends Component {
   });
   }
 
-  setupClarifiaRequestOptions = () => {
-    const config = this.state.clarifaiConfig;
+  setupClarifiaRequestOptions = (config, imageUrl) => {
     return {
       method: 'POST',
       headers: {
           'Accept': 'application/json',
           'Authorization': 'Key ' + config.PAT
       },
-      body: this.setupClarifiaRequestBody(config)
+      body: this.setupClarifiaRequestBody(config, imageUrl)
     };
   }
 
-  setupClarifaiRequest = () => {
-    const config = this.state.clarifaiConfig;
-    const requestOptions = this.setupClarifiaRequestOptions(config);
+  setupClarifaiRequest = (config, imageUrl) => {
+    const requestOptions = this.setupClarifiaRequestOptions(config, imageUrl);
   
     fetch("https://api.clarifai.com/v2/models/" + config.MODEL_ID + "/outputs", requestOptions)
       .then(response => response.text())
@@ -62,12 +60,14 @@ class App extends Component {
   }
 
   onInputChange = (event) => {
+    this.setState({ input: event.target.value })
     console.log(event.target.value);
   }
 
   onButtonSubmit = (event) => {
-    const config = this.state.clarifaiConfig;
-    this.setupClarifaiRequest(config);
+    console.log(this.state)
+    this.setState({imageUrl: this.state.input})
+    this.setupClarifaiRequest(this.state.clarifaiConfig, this.state.input);
   }
 
   render() {
@@ -79,8 +79,7 @@ class App extends Component {
         <ImageLinkForm 
           onInputChange={this.onInputChange}
           onButtonSubmit={this.onButtonSubmit}/>
-        {/* 
-        <FaceRecognition /> */}
+        <FaceRecognition imageUrl={this.state.imageUrl}/>
       </div>
     )
   }
