@@ -4,6 +4,7 @@ import Logo from './components/Logo'
 import Rank from './components/Rank'
 import ImageLinkForm from './components/ImageLinkForm'
 import FaceRecognition from './components/FaceRecognition'
+import clarifaiConfig from './Clarifai'
 import './App.css'
 
 class App extends Component {
@@ -12,12 +13,7 @@ class App extends Component {
     this.state = {
       input: '',
       imageUrl:'',
-      clarifaiConfig: {
-        PAT:***REMOVED***,
-        USER_ID:***REMOVED***,
-        APP_ID:***REMOVED***,
-        MODEL_ID: ***REMOVED***,
-      }
+      clarifaiConfig: clarifaiConfig
     }
   }
 
