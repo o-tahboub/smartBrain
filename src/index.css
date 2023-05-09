@@ -8,5 +8,11 @@ body {
 }
 
 .center {
-  @apply flex justify-center
+  @apply flex justify-center;
+}
+
+.boundingBox {
+  position: absolute;
+  border: 0.2rem solid #149df2;
+  cursor: pointer;
 }

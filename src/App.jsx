@@ -13,11 +13,12 @@ class App extends Component {
     this.state = {
       input: '',
       imageUrl:'',
+      box: {},
       clarifaiConfig: clarifaiConfig
     }
   }
 
-  setupClarifiaRequestBody = (config, imageUrl) => {
+  setupClarifaiRequestBody = (config, imageUrl) => {
     return JSON.stringify({
       "user_app_id": {
           "user_id": config.USER_ID,
@@ -35,35 +36,55 @@ class App extends Component {
   });
   }
 
-  setupClarifiaRequestOptions = (config, imageUrl) => {
+  getClarifaiRequestOptions = (config, imageUrl) => {
     return {
       method: 'POST',
       headers: {
           'Accept': 'application/json',
           'Authorization': 'Key ' + config.PAT
       },
-      body: this.setupClarifiaRequestBody(config, imageUrl)
+      body: this.setupClarifaiRequestBody(config, imageUrl)
     };
   }
 
-  setupClarifaiRequest = (config, imageUrl) => {
-    const requestOptions = this.setupClarifiaRequestOptions(config, imageUrl);
-  
-    fetch("https://api.clarifai.com/v2/models/" + config.MODEL_ID + "/outputs", requestOptions)
-      .then(response => response.text())
-      .then(result => console.log(result))
-      .catch(error => console.log('error', error));
+  getFaceBox = (data) => {
+    const faceBox = data.outputs[0].data.regions[0].region_info.bounding_box;
+    const image = document.querySelector('#inputImage');
+    const width = Number(image.width);
+    const height= Number(image.height);
+    return {
+      top_row: faceBox.top_row * height,
+      left_col: faceBox.left_col * width,
+      bottom_row: height - (faceBox.bottom_row * height),
+      right_col: width - (faceBox.right_col * width)
+    }
   }
-
+  
+  displayFaceBox = (box) => {
+    this.setState({box: box});
+  }
+  
   onInputChange = (event) => {
     this.setState({ input: event.target.value })
-    console.log(event.target.value);
   }
 
-  onButtonSubmit = (event) => {
-    console.log(this.state)
+  onButtonSubmit = async (event) => {
     this.setState({imageUrl: this.state.input})
-    this.setupClarifaiRequest(this.state.clarifaiConfig, this.state.input);
+
+    const reqOptions = this.getClarifaiRequestOptions(
+      clarifaiConfig, 
+      this.state.input);
+
+    try {
+      const res = await fetch(
+        "https://api.clarifai.com/v2/models/" 
+        + this.state.clarifaiConfig.MODEL_ID + "/outputs", reqOptions)
+        .then(res => res.json());
+      
+      this.displayFaceBox(this.getFaceBox(res));
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   render() {
@@ -75,7 +96,9 @@ class App extends Component {
         <ImageLinkForm 
           onInputChange={this.onInputChange}
           onButtonSubmit={this.onButtonSubmit}/>
-        <FaceRecognition imageUrl={this.state.imageUrl}/>
+        <FaceRecognition 
+          imageUrl={this.state.imageUrl}
+          box={this.state.box}/>
       </div>
     )
   }
