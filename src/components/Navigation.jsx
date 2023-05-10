@@ -4,7 +4,7 @@ const Navigation = () => {
     return (
         <nav className='flex justify-end'>
             <p className='text-2xl 
-            text-black 
+            text-white 
             underline 
             p-3 
             hover:cursor-pointer 

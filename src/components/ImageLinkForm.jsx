@@ -3,7 +3,7 @@ import React from 'react'
 const ImageLinkForm = ({ onInputChange, onButtonSubmit }) => {
     return (
         <div>
-            <p className='center m-4 text-base'>
+            <p className='center m-4 text-base text-white'>
                 {'This magic brain will detect faces in your pictures. Give it a try'}
             </p>
             <div className='center'>
@@ -17,19 +17,17 @@ const ImageLinkForm = ({ onInputChange, onButtonSubmit }) => {
                                 bg-sky-800'>
                     <input 
                         type="text" 
-                        className='text-sm p-2 w-9/12 mx-auto' 
+                        className='text-sm p-2 w-9/12 mx-auto rounded-l' 
                         onChange={onInputChange}/>
                     <button className='w-3/12 
-                        ease-out 
+                        rounded-r 
                         text-sm
-                        hover:scale-105
-                        hover:transition-colors
-                        hover:ease-in
                         px-4
                         py-2
                         inline-block
                         text-white
                         bg-purple-600
+                        hover:bg-blue-800
                         cursor-pointer'
                         onClick={onButtonSubmit}>Detect</button>
                 </div>
