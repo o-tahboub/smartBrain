@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Navigation = () => {
+const Navigation = ({onRouteChange}) => {
     return (
         <nav className='flex justify-end'>
             <p className='text-2xl 
@@ -9,7 +9,8 @@ const Navigation = () => {
             p-3 
             hover:cursor-pointer 
             hover:transition-colors 
-            hover:opacity-50'>
+            hover:opacity-50'
+            onClick={() => onRouteChange('signin')}>
                 Sign Out
             </p>
         </nav>

@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import SignIn from './components/SignIn'
+import Register from './components/Register'
 import Navigation from './components/Navigation'
 import Logo from './components/Logo'
 import Rank from './components/Rank'
@@ -14,6 +16,7 @@ class App extends Component {
       input: '',
       imageUrl:'',
       box: {},
+      route: 'signin',
       clarifaiConfig: clarifaiConfig
     }
   }
@@ -87,18 +90,63 @@ class App extends Component {
     }
   }
 
+  onRouteChange = (route) => {
+    this.setState({route: route})
+  }
+
+  route(route) {
+    switch (route) {
+      case 'home':
+        return (
+        <div>
+          <Navigation 
+          onRouteChange={this.onRouteChange}/>
+          <Logo />
+          <Rank />                
+          <ImageLinkForm 
+            onInputChange={this.onInputChange}
+            onButtonSubmit={this.onButtonSubmit}/>
+          <FaceRecognition 
+            imageUrl={this.state.imageUrl}
+            box={this.state.box}/>
+        </div>
+        )
+      break;
+
+      case 'signin':
+        return (
+          <div>
+            <Logo />
+            <SignIn 
+              onRouteChange={this.onRouteChange}/>
+          </div>
+        )
+        break;
+
+      case 'register':
+        return (
+          <div>
+            <Logo />
+            <Register 
+              onRouteChange={this.onRouteChange}/>
+          </div>
+        )
+        break;
+          
+      default:
+        return (
+        <SignIn 
+        onRouteChange={this.onRouteChange}/>
+        )
+        break;
+    }
+
+  }
+
   render() {
     return (
       <div className="App">
-        <Navigation />
-        <Logo />
-        <Rank />
-        <ImageLinkForm 
-          onInputChange={this.onInputChange}
-          onButtonSubmit={this.onButtonSubmit}/>
-        <FaceRecognition 
-          imageUrl={this.state.imageUrl}
-          box={this.state.box}/>
+        {this.route(this.state.route)}
       </div>
     )
   }
