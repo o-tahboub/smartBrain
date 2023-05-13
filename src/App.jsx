@@ -17,6 +17,7 @@ class App extends Component {
       imageUrl:'',
       box: {},
       route: 'signin',
+      isSignedIn: 'false',
       clarifaiConfig: clarifaiConfig
     }
   }
@@ -94,7 +95,7 @@ class App extends Component {
     this.setState({route: route})
   }
 
-  route(route) {
+  route = (route) => {
     switch (route) {
       case 'home':
         return (
