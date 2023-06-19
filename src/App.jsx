@@ -18,7 +18,14 @@ class App extends Component {
       box: {},
       route: 'signin',
       isSignedIn: 'false',
-      clarifaiConfig: clarifaiConfig
+      clarifaiConfig: clarifaiConfig,
+      user: {
+        id: '',
+        name: '',
+        email: '',
+        entries: 0,
+        joined: ''
+      }
     }
   }
 
@@ -49,6 +56,16 @@ class App extends Component {
       },
       body: this.setupClarifaiRequestBody(config, imageUrl)
     };
+  }
+
+  loadUser = (userData) => {
+    this.setState({user: {
+      id: userData.id,
+      name: userData.name,
+      email: userData.email,
+      entries: userData.entries,
+      joined: userData.joined,
+    }})
   }
 
   getFaceBox = (data) => {
@@ -129,7 +146,7 @@ class App extends Component {
           <div>
             <Logo />
             <Register 
-              onRouteChange={this.onRouteChange}/>
+              loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
           </div>
         )
         break;
