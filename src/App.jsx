@@ -100,7 +100,7 @@ class App extends Component {
     .then(count => Number(count))
     .then(count => {
       this.setState(Object.assign(this.state.user, { entries: count }))
-    }).then(console.log(this.state.user))
+    })
   }
 
   onButtonSubmit = async (event) => {
