@@ -89,6 +89,20 @@ class App extends Component {
     this.setState({ input: event.target.value })
   }
 
+  updateEntriesCount = () => {
+    fetch('http://localhost:3000/image', {
+      method: 'put',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        id : this.state.user.id
+      })
+    }).then(res => res.json())
+    .then(count => Number(count))
+    .then(count => {
+      this.setState(Object.assign(this.state.user, { entries: count }))
+    }).then(console.log(this.state.user))
+  }
+
   onButtonSubmit = async (event) => {
     this.setState({imageUrl: this.state.input})
 
@@ -100,10 +114,10 @@ class App extends Component {
       const res = await fetch(
         "https://api.clarifai.com/v2/models/" 
         + this.state.clarifaiConfig.MODEL_ID + "/outputs", reqOptions)
-        .then(res => res.json());
-      
-      this.displayFaceBox(this.getFaceBox(res));
-    } catch (err) {
+        .then(res => res.json())
+        this.updateEntriesCount();
+        this.displayFaceBox(this.getFaceBox(res));
+      } catch (err) {
       console.log(err);
     }
   }
