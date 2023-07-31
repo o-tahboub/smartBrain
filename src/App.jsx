@@ -118,9 +118,11 @@ class App extends Component {
         return (
         <div>
           <Navigation 
-          onRouteChange={this.onRouteChange}/>
+            onRouteChange={this.onRouteChange}/>
           <Logo />
-          <Rank />                
+          <Rank 
+            userName={this.state.user.name}
+            userEntries={this.state.user.entries}/>                
           <ImageLinkForm 
             onInputChange={this.onInputChange}
             onButtonSubmit={this.onButtonSubmit}/>
@@ -136,7 +138,8 @@ class App extends Component {
           <div>
             <Logo />
             <SignIn 
-              onRouteChange={this.onRouteChange}/>
+              onRouteChange={this.onRouteChange}
+              loadUser={this.loadUser}/>
           </div>
         )
         break;
@@ -154,7 +157,8 @@ class App extends Component {
       default:
         return (
         <SignIn 
-        onRouteChange={this.onRouteChange}/>
+        onRouteChange={this.onRouteChange}
+        loadUser={this.loadUser}/>
         )
         break;
     }
