@@ -169,8 +169,9 @@ class App extends Component {
         return (
           <div>
             <Logo />
-            <Register 
-              loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
+            <Register
+              onRouteChange={this.onRouteChange} 
+              loadUser={this.loadUser}/>
           </div>
         )
         break;
