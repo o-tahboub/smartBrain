@@ -9,24 +9,30 @@ import FaceRecognition from './components/FaceRecognition'
 import clarifaiConfig from './Clarifai'
 import './App.css'
 
+const initialState = {
+  input: '',
+  imageUrl:'',
+  box: {},
+  route: 'signin',
+  isSignedIn: 'false',
+  clarifaiConfig: clarifaiConfig,
+  user: {
+    id: '',
+    name: '',
+    email: '',
+    entries: 0,
+    joined: ''
+  }
+};
+
 class App extends Component {
   constructor() {
     super();
-    this.state = {
-      input: '',
-      imageUrl:'',
-      box: {},
-      route: 'signin',
-      isSignedIn: 'false',
-      clarifaiConfig: clarifaiConfig,
-      user: {
-        id: '',
-        name: '',
-        email: '',
-        entries: 0,
-        joined: ''
-      }
-    }
+    this.state = initialState;
+  }
+
+  initState = () => {
+    this.setState(initialState);
   }
 
   setupClarifaiRequestBody = (config, imageUrl) => {
@@ -153,7 +159,8 @@ class App extends Component {
             <Logo />
             <SignIn 
               onRouteChange={this.onRouteChange}
-              loadUser={this.loadUser}/>
+              loadUser={this.loadUser}
+              initState={this.initState}/>
           </div>
         )
         break;
@@ -172,7 +179,8 @@ class App extends Component {
         return (
         <SignIn 
         onRouteChange={this.onRouteChange}
-        loadUser={this.loadUser}/>
+        loadUser={this.loadUser}
+        initState={this.initState}/>
         )
         break;
     }

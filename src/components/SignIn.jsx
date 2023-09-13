@@ -4,6 +4,7 @@ class SignIn extends Component {
 
     constructor(props) {
         super(props);
+        this.props.initState();
         this.state = {
             signInEmail:'',
             signInPassword: ''
