@@ -6,7 +6,6 @@ import Logo from './components/Logo'
 import Rank from './components/Rank'
 import ImageLinkForm from './components/ImageLinkForm'
 import FaceRecognition from './components/FaceRecognition'
-import clarifaiConfig from './Clarifai'
 import './App.css'
 
 const initialState = {
@@ -15,7 +14,6 @@ const initialState = {
   box: {},
   route: 'signin',
   isSignedIn: 'false',
-  clarifaiConfig: clarifaiConfig,
   user: {
     id: '',
     name: '',
@@ -33,35 +31,6 @@ class App extends Component {
 
   initState = () => {
     this.setState(initialState);
-  }
-
-  setupClarifaiRequestBody = (config, imageUrl) => {
-    return JSON.stringify({
-      "user_app_id": {
-          "user_id": config.USER_ID,
-          "app_id": config.APP_ID
-      },
-      "inputs": [
-          {
-              "data": {
-                  "image": {
-                      "url": imageUrl
-                  }
-              }
-          }
-      ]
-  });
-  }
-
-  getClarifaiRequestOptions = (config, imageUrl) => {
-    return {
-      method: 'POST',
-      headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Key ' + config.PAT
-      },
-      body: this.setupClarifaiRequestBody(config, imageUrl)
-    };
   }
 
   loadUser = (userData) => {
@@ -112,14 +81,16 @@ class App extends Component {
   onButtonSubmit = async (event) => {
     this.setState({imageUrl: this.state.input})
 
-    const reqOptions = this.getClarifaiRequestOptions(
-      clarifaiConfig, 
-      this.state.input);
-
     try {
       const res = await fetch(
-        "https://api.clarifai.com/v2/models/" 
-        + this.state.clarifaiConfig.MODEL_ID + "/outputs", reqOptions)
+        "http://localhost:3000/clarifaiFaceDetection",
+        {
+          method: 'post',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            imageUrl : this.state.input
+          })
+        })
         .then(res => res.json())
         this.updateEntriesCount();
         this.displayFaceBox(this.getFaceBox(res));
