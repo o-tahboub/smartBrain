@@ -25,7 +25,7 @@ class Register extends Component {
 
     onRegister = () => {
         try {
-            fetch('http://localhost:3000/register',
+            fetch('https://smartbrain-9185.onrender.com/register',
             {
                 method: 'post',
                 headers: {'Content-Type': 'application/json'},
