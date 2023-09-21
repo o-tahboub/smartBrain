@@ -65,7 +65,7 @@ class App extends Component {
   }
 
   updateEntriesCount = () => {
-    fetch('https://smartbrain-9185.onrender.com/image', {
+    fetch('https://smartbrainapi-64j1.onrender.com/image', {
       method: 'put',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -83,7 +83,7 @@ class App extends Component {
 
     try {
       const res = await fetch(
-        "https://smartbrain-9185.onrender.com/clarifaiFaceDetection",
+        'https://smartbrainapi-64j1.onrender.com/clarifaiFaceDetection',
         {
           method: 'post',
           headers: {'Content-Type': 'application/json'},
