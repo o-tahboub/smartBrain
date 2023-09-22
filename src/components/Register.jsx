@@ -6,7 +6,8 @@ class Register extends Component {
         this.state = {
             name: '',
             email: '',
-            password: ''
+            password: '',
+            errorMessage: ''
         }
 
     }
@@ -24,27 +25,24 @@ class Register extends Component {
     }
 
     onRegister = () => {
-        try {
-            fetch('https://smartbrainapi-64j1.onrender.com/register',
-            {
-                method: 'post',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    name: this.state.name,
-                    email: this.state.email,
-                    password: this.state.password
-                })
-            }).then(res => res.json()).then(user => {
-                if(user) {
-                    this.props.loadUser(user)
-                    this.props.onRouteChange('signin')
-                }
-            }) 
-
-        } catch(e) {
-            console.log(e.message);
-        }
-
+        fetch('https://smartbrainapi-64j1.onrender.com/register',
+        {
+            method: 'post',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                name: this.state.name,
+                email: this.state.email,
+                password: this.state.password
+            })
+        }).then(res => res.json()).then(user => {
+            if(user.id) {
+                this.props.loadUser(user)
+                this.setState({errorMessage: ''})
+                this.props.onRouteChange('signin')
+            }
+        }).catch(this.setState({errorMessage: 
+            'Please enter a valid name, email and password. Your password should be at least 8 characters long'
+        }))
     }
 
     render(){
@@ -79,12 +77,12 @@ class Register extends Component {
                         <label className="block text-white text-base mb-2" htmlFor="password">
                             Password
                         </label>
-                        <input className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-black mb-3 leading-tight focus:outline-none focus:shadow-outline" 
+                        <input className="shadow appearance-none border rounded w-full py-2 px-3 text-black mb-3 leading-tight focus:outline-none focus:shadow-outline" 
                         id="password" 
                         type="password" 
                         placeholder="******************"
                         onChange={this.onPasswordChange}/>
-                        <p className="text-red-500 text-xs italic">Please choose a password.</p>
+                        <p className="text-red-500 text-xs italic">{this.state.errorMessage}</p>
                         </div>
                         <div className="flex items-center justify-between">
                         <button className="bg-purple-600 hover:bg-blue-800 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" onClick={this.onRegister}>
