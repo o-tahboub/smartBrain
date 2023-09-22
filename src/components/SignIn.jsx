@@ -7,7 +7,8 @@ class SignIn extends Component {
         this.props.initState();
         this.state = {
             signInEmail:'',
-            signInPassword: ''
+            signInPassword: '',
+            errorMessage: ''
         }
     }
 
@@ -28,12 +29,16 @@ class SignIn extends Component {
                 email: this.state.signInEmail,
                 password: this.state.signInPassword
             })
-        }).then(res => res.json()).then(userData => {
+        }).then(res => res.json())
+        .then(userData => {
             if(userData.id) {
                 this.props.loadUser(userData)
                 this.props.onRouteChange('home')
+                this.setState({errorMessage: ''})
             }
-        })
+        }).catch(this.setState({errorMessage: 
+            'Please enter a valid email and password'
+        }))
     }
 
     render() {
@@ -60,13 +65,13 @@ class SignIn extends Component {
                             Password
                         </label>
                         <input 
-                        className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-black mb-3 leading-tight focus:outline-none focus:shadow-outline" 
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-black mb-3 leading-tight focus:outline-none focus:shadow-outline" 
                         id="password" 
                         type="password" 
                         placeholder="******************" 
                         onChange={this.onSignInPasswordChange}
                         />
-                        <p className="text-red-500 text-xs italic">Please choose a password.</p>
+                        <p className="text-red-500 text-xs italic">{this.state.errorMessage}</p>
                         </div>
                         <div className="flex items-center justify-between">
                         <button className="bg-purple-600 hover:bg-blue-800 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
