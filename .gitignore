@@ -25,5 +25,6 @@ dist-ssr
 src/Clarifai.jsx
 Tools/*
 
-# Config
-.env*
+# Environment files
+.env
+.env.*
