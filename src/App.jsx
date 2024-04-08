@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import SignIn from './components/SignIn'
 import Register from './components/Register'
 import Navigation from './components/Navigation'
@@ -23,27 +23,46 @@ const initialState = {
   }
 };
 
-class App extends Component {
-  constructor() {
-    super();
-    this.state = initialState;
+const App = (props) => {
+  const [input, setInput] = useState('')
+  const [imageUrl, setImageUrl] = useState('')
+  const [box, setBox] = useState({})
+  const [route, setRoute] = useState('signin')
+  const [isSignedIn, setIsSignedIn] = useState('false')
+  const [user, setUser] = useState({
+    id: '',
+    name: '',
+    email: '',
+    entries: 0,
+    joined: ''
+  })
+
+  const initState = () => {
+    setInput('')
+    setImageUrl('')
+    setBox({})
+    setRoute('signin')
+    setIsSignedIn('false')
+    setUser(Object.assign(user,{
+      id: '',
+      name: '',
+      email: '',
+      entries: 0,
+      joined: ''
+    }))
   }
 
-  initState = () => {
-    this.setState(initialState);
-  }
-
-  loadUser = (userData) => {
-    this.setState({user: {
+  const loadUser = (userData) => {
+    setUser({
       id: userData.id,
       name: userData.name,
       email: userData.email,
       entries: userData.entries,
       joined: userData.joined,
-    }})
+    })
   }
 
-  getFaceBox = (data) => {
+  const getFaceBox = (data) => {
     const faceBox = data.outputs[0].data.regions[0].region_info.bounding_box;
     const image = document.querySelector('#inputImage');
     const width = Number(image.width);
@@ -56,70 +75,69 @@ class App extends Component {
     }
   }
   
-  displayFaceBox = (box) => {
-    this.setState({box: box});
+  const displayFaceBox = (box) => {
+    setBox(box);
   }
   
-  onInputChange = (event) => {
-    this.setState({ input: event.target.value })
+  const onInputChange = (event) => {
+    setInput(event.target.value)
   }
 
-  updateEntriesCount = () => {
-    fetch('https://smartbrainapi-64j1.onrender.com/image', {
+  const updateEntriesCount = () => {
+    fetch(import.meta.env.VITE_API_URL + '/image', {
       method: 'put',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        id : this.state.user.id
+        id : user.id
       })
     }).then(res => res.json())
     .then(count => Number(count))
     .then(count => {
-      this.setState(Object.assign(this.state.user, { entries: count }))
+      setUser(Object.assign(user, { entries: count }))
     })
   }
 
-  onButtonSubmit = async (event) => {
-    this.setState({imageUrl: this.state.input})
+  const onButtonSubmit = async (event) => {
+    setImageUrl(input)
 
     try {
-      const res = await fetch(
-        'https://smartbrainapi-64j1.onrender.com/clarifaiFaceDetection',
+      const res = await fetch(import.meta.env.VITE_API_URL + '/clarifaiFaceDetection',
         {
           method: 'post',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
-            imageUrl : this.state.input
+            imageUrl : input
           })
         })
         .then(res => res.json())
-        this.updateEntriesCount();
-        this.displayFaceBox(this.getFaceBox(res));
+        updateEntriesCount();
+        displayFaceBox(getFaceBox(res));
       } catch (err) {
       console.log(err);
     }
   }
 
-  onRouteChange = (route) => {
-    this.setState({route: route})
+  const onRouteChange = (route) => {
+    setRoute(route)
   }
 
-  route = (route) => {
+  const router = (route) => {
     switch (route) {
       case 'home':
         return (
         <div>
           <Navigation 
-            onRouteChange={this.onRouteChange}/>
+            onRouteChange={onRouteChange}/>
           <Logo />
           <Rank 
-            userName={this.state.user.name}
-            userEntries={this.state.user.entries}/>                
+            userName={user.name}
+            userEntries={user.entries}/>                
           <ImageLinkForm 
-            onInputChange={this.onInputChange}
-            onButtonSubmit={this.onButtonSubmit}/>
+            onInputChange={onInputChange}
+            onButtonSubmit={onButtonSubmit}/>
           <FaceRecognition 
-            imageUrl={this.state.imageUrl}
-            box={this.state.box}/>
+            imageUrl={imageUrl}
+            box={box}/>
         </div>
         )
       break;
@@ -129,9 +147,9 @@ class App extends Component {
           <div>
             <Logo />
             <SignIn 
-              onRouteChange={this.onRouteChange}
-              loadUser={this.loadUser}
-              initState={this.initState}/>
+              onRouteChange={onRouteChange}
+              loadUser={loadUser}
+              initState={initState}/>
           </div>
         )
         break;
@@ -141,8 +159,8 @@ class App extends Component {
           <div>
             <Logo />
             <Register
-              onRouteChange={this.onRouteChange} 
-              loadUser={this.loadUser}/>
+              onRouteChange={onRouteChange} 
+              loadUser={loadUser}/>
           </div>
         )
         break;
@@ -150,22 +168,20 @@ class App extends Component {
       default:
         return (
         <SignIn 
-        onRouteChange={this.onRouteChange}
-        loadUser={this.loadUser}
-        initState={this.initState}/>
+        onRouteChange={onRouteChange}
+        loadUser={loadUser}
+        initState={initState}/>
         )
         break;
     }
 
   }
-
-  render() {
-    return (
-      <div className="App">
-        {this.route(this.state.route)}
-      </div>
-    )
-  }
+  
+  return (
+    <div className="App">
+      {router(route)}
+    </div>
+  )
 }
 
 export default App
